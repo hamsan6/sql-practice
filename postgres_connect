@@ -1,0 +1,14 @@
+## Open Terminal 
+
+## connect to postgres
+
+psql postgres
+
+## connects to db <name>
+
+postgres-# \c sqlda
+You are now connected to database "sqlda" as user "*****".
+
+## lists all the tables in the db
+
+sqlda-# \dt
