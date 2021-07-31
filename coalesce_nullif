@@ -1,0 +1,15 @@
+## Coalesce function - creating default values and avoiding NULL values. 
+## If value is NULL, coalesce function replaces it with second value in the function.
+
+select first_name, last_name, 
+COALESCE(phone,'NO PHONE') as phone 
+from customers 
+limit 15;
+
+## NULLIF function - a two-value function - returns NULL if first val of fn.=second val.
+
+select customer_id, 
+NULLIF(title,'Honorable') as title, 
+first_name, last_name 
+from customers 
+limit 10;

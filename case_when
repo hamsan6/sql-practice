@@ -1,0 +1,6 @@
+## Map various values in a column to other values using CASE WHEN function
+
+sqlda=# select c.customer_id, case when c.state in ('MA','NH', 'VT', 'ME', 'CT', 'RI') then 'New England'
+sqlda-# when c.state in ('GA','FL','MS','AL','LA','KY','VA','NC','SC','TN','VI','WV','AR') then 'Southeast'
+sqlda-# else 'Other' END as region
+sqlda-# from customers c order by 1 limit 15;
