@@ -1,0 +1,8 @@
+## Casting function - change data type of col within query. done to use a fn which is only available to a particular data type
+# use column::datatype format
+# limit - datetime cannot be cast to float types
+
+select product_id, model, year::TEXT, 
+product_type,base_msrp, production_start_date
+from products
+limit 10;

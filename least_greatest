@@ -1,0 +1,7 @@
+## least function - useful function for data preparation. Each function takes any no. of values and returns the least or the greatest values --> which is then used in a table col in the SQL query output
+
+select product_id, model, year, product_type,
+LEAST(500.00,base_msrp) as base_mrp_v2, production_start_date
+from products
+order by production_start_date
+limit 10;
