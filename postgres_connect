@@ -12,3 +12,9 @@ You are now connected to database "sqlda" as user "*****".
 ## lists all the tables in the db
 
 sqlda-# \dt
+
+## all meta commands
+\?
+
+## Quit
+\q
