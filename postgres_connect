@@ -18,3 +18,7 @@ sqlda-# \dt
 
 ## Quit
 \q
+
+
+## Clear screen
+\! clear
