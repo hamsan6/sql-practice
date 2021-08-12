@@ -1,0 +1,8 @@
+## GROUPING SETS
+
+
+select state, gender, count(*) 
+from customers 
+group by grouping sets ( 
+(state), (gender), (state,gender)
+) order by 1,2;
