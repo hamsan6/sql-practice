@@ -4,3 +4,19 @@ sqlda=# select c.customer_id, case when c.state in ('MA','NH', 'VT', 'ME', 'CT',
 sqlda-# when c.state in ('GA','FL','MS','AL','LA','KY','VA','NC','SC','TN','VI','WV','AR') then 'Southeast'
 sqlda-# else 'Other' END as region
 sqlda-# from customers c order by 1 limit 15;
+
+
+
+## Coalesce and case when, combine multiple tables:
+
+select c.*,p.*,
+COALESCE(s.dealership_id,-1) as dealership_id,
+case when (p.base_msrp - s.sales_amount > 500) then 1
+else 0 END as high_savings
+from sales s 
+inner join customers c 
+on s.customer_id=c.customer_id 
+inner join products p 
+on s.product_id=p.product_id 
+left join dealerships d on s.dealership_id=d.dealership_id 
+limit 5;
