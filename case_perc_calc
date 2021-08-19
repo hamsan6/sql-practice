@@ -1,0 +1,5 @@
+## Calculate % using CASE - for missing items
+
+
+select SUM(CASE WHEN state IS NULL OR state in('') THEN 1 ELSE 0 END)::FLOAT/COUNT(*)*100 as missing_state 
+from customers;
