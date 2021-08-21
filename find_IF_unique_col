@@ -1,0 +1,9 @@
+## Find if a column is a primary column
+
+sqlda=# select count (distinct customer_id)=count(*) as unique_true from customers;
+
+OUTPUT:
+ unique_true 
+-------------
+ t
+(1 row)
