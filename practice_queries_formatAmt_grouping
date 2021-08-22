@@ -1,0 +1,35 @@
+## Average sales by channel; amount formatted
+
+select channel, to_char(avg(sales_amount),'$9,999,999,999.99') from sales group by 1;
+  channel   |      to_char       
+------------+--------------------
+ dealership | $         7,939.33
+ internet   | $         6,413.12
+(2 rows)
+
+## average sales by product_id; amount formatted
+
+sqlda=# select product_id, to_char(avg(sales_amount),'$9,999,999,999.99') from sales group by 1;
+ product_id |      to_char       
+------------+--------------------
+         12 | $           334.36
+          3 | $           477.16
+         11 | $        90,681.82
+          8 | $           668.82
+         10 | $        81,533.83
+          9 | $        33,375.47
+          7 | $           573.45
+          1 | $           382.36
+          5 | $           669.07
+          2 | $           757.32
+          4 | $       109,871.62
+          6 | $        62,654.61
+(12 rows)
+
+## sales by state
+
+select c.state, to_char(sum(s.sales_amount),'$9,999,999,999.99') as sales_amount from sales s inner join customers c on s.customer_id=c.customer_id group by c.state order by 2 desc;
+
+## average sales amount: by channel, then by product_id, then by both together
+
+select channel,product_id, to_char(avg(sales_amount),'$9,999,999,999.99') from sales group by grouping sets((1),(2),(1,2)) order by 1,2 desc;
