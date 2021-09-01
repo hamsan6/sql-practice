@@ -1,0 +1,62 @@
+over() -- is used to display all other column values along with the aggregate for the entire set of data (without partitioning or any grouping) Eg. #1
+
+over(partition by ...) -- is used to divide the data into groups or Partitions. This gives aggregates by the partitions Eg. #2
+
+over(order by ...) -- is used to display all other column values along with aggregates for the windows, where each row is considered a window, and the rows are cumulatively added to form subsequent windows, eg. window for 1st row contains 1 row, returns count of 1; window for 2nd row contains 2 rows and returns count of 2. this can be used for ranking customers eg. by count(*) over(order by customer_id), as customer_id is unique here. Or for getting aggregate of each window
+Eg. #3
+
+over (partition by... order by...) -- when both are combined, data is partitioned and then window aggregates are calculated
+
+
+## Eg. #1 Count total number of customers who have filled in street_addr field along with displaying all other columns --> use window function as count(...) over()
+
+select customer_id, street_address, date_added::date, count(case when street_address is not null then customer_id else null end) over() as total_cust_filled_addr from customers limit 10;
+
+ customer_id |    street_address     | date_added | total_cust_filled_addr 
+-------------+-----------------------+------------+------------------------
+           1 |                       | 2017-04-23 |                  44533
+           2 | 2573 Fordem Parkway   | 2014-10-02 |                  44533
+           3 | 5651 Kennedy Park     | 2018-10-27 |                  44533
+           4 | 224 Village Circle    | 2017-09-03 |                  44533
+           5 | 38 Lindbergh Way      | 2014-03-06 |                  44533
+           6 | 6537 Delladonna Drive | 2013-03-31 |                  44533
+           7 | 001 Onsgard Park      | 2011-08-25 |                  44533
+
+## Eg. #2 Count total number of customers by each gender, along with displaying each row of data --> use window function as count(...) over(partition by)
+
+select customer_id, gender, first_name, count(*) over(partition by gender) as total_cust_byGender from customers order by customer_id limit 10;
+ customer_id | gender |  first_name  | total_cust_bygender 
+-------------+--------+--------------+---------------------
+           1 | F      | Arlena       |               25044
+           2 | M      | Ode          |               24956
+           3 | M      | Braden       |               24956
+           4 | F      | Jessika      |               25044
+           5 | F      | Lonnie       |               25044
+           6 | M      | Cortie       |               24956
+           7 | M      | Wood         |               24956
+           8 | M      | Rutger       |               24956
+           9 | F      | Melantha     |               25044
+          10 | F      | Barbara-anne |               25044
+
+
+## Eg. #3 Count number of customers who have filled in their street address over time --> use window function as count(...) over(order by date) -- to give total no. of customers who have filled their addr. on that particular date, while repeating the rest of column values. Eg, for below example - 10 customers entered a street_addr on the 15th Mar, 2010. The result includes the 11th customer who did not fill the addr. as well
+
+select customer_id,street_address,date_added::date,
+count(case when street_address is not null then customer_id else null end) 
+over(order by date_added::date) as total_cust_filled_st_addr 
+from customers limit 12;
+
+customer_id |     street_address     | date_added | total_cust_filled_st_addr 
+-------------+------------------------+------------+---------------------------
+       13390 | 38463 Forest Dale Way  | 2010-03-15 |                        10
+       12484 |                        | 2010-03-15 |                        10
+        6173 | 79865 Hagan Terrace    | 2010-03-15 |                        10
+       30046 | 13961 Steensland Trail | 2010-03-15 |                        10
+        2625 | 0353 Iowa Road         | 2010-03-15 |                        10
+       35683 | 1 Cordelia Crossing    | 2010-03-15 |                        10
+        7486 | 61 Village Crossing    | 2010-03-15 |                        10
+       18685 | 86 Michigan Junction   | 2010-03-15 |                        10
+       30555 | 294 Quincy Hill        | 2010-03-15 |                        10
+       48307 | 8487 Warbler Plaza     | 2010-03-15 |                        10
+       17099 | 130 Marcy Crossing     | 2010-03-15 |                        10
+       38885 | 827 Saint Paul Place   | 2010-03-16 |                        22
