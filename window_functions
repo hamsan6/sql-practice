@@ -1,0 +1,13 @@
+## Window functions
+
+ROW_NUMBER() - gives current row number, within a partition
+
+RANK() - gives ranking within partition, based on ORDER BY; creates gaps where there are ties, and subsequent row is no. 3 if 1 and 2 were a tie
+
+DENSE_RANK() - gives ranking within partition, based on ORDER BY; with no gaps where tied
+
+NTILE(num_buckets) - assigns an n-tile within a partition, based on ORDER BY;n determined by num_buckets int
+
+LAG(col1,offset) - returns val of col1 that is integer offset rows before the current row, based on ORDER BY
+
+LEAD(col1,offset) - returns val of col1 that is integer offset rows after the current row, based on ORDER BY
