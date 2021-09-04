@@ -1,0 +1,99 @@
+select sales_transaction_date::date, to_char(sum(sales_amount),'L999,999,999') from sales where sales_transaction_date>='2018-01-01' and sales_transaction_date<'2019-01-01' group by 1 order by 1 limit 20;
+ sales_transaction_date |    to_char    
+------------------------+---------------
+ 2018-01-01             |       123,690
+ 2018-01-02             |       183,860
+ 2018-01-03             |        40,030
+ 2018-01-04             |       187,120
+ 2018-01-05             |       186,460
+ 2018-01-06             |       100,480
+ 2018-01-07             |        42,990
+
+
+## Calculating moving 30 day avg sales -- type 1
+
+ with daily_sales as (
+select 
+    sales_transaction_date::date, 
+    sum(sales_amount) as daily_total_sales
+from
+    sales
+group by 1
+),
+moving_30_day_avg as (
+select
+    sales_transaction_date::date,
+    to_char(daily_total_sales,'L999,999,999') as daily_sales_tot,
+    avg(daily_total_sales) over(order by sales_transaction_date ROWS between 30 PRECEDING and CURRENT ROW) as rolling_avg_30
+from
+    daily_sales
+order by 1
+)
+select sales_transaction_date::date,
+    daily_sales_tot,
+    to_char(rolling_avg_30,'L999,999,999') as rolling_30day_avg
+from 
+    moving_30_day_avg 
+where 
+    sales_transaction_date>='2018-01-01' 
+and 
+    sales_transaction_date<'2019-01-01'
+limit 20;
+
+
+## Calculating moving 30 day avg sales -- type 2
+
+with daily_sales as (
+select 
+    sales_transaction_date::date, 
+    sum(sales_amount) as daily_total_sales
+from
+    sales
+group by 1
+)
+select
+    sales_transaction_date::date,
+    to_char(daily_total_sales,'L999,999,999') as daily_sales_tot,
+    to_char(avg(daily_total_sales) over(order by sales_transaction_date ROWS between 30 PRECEDING and CURRENT ROW),'L999,999,999') as rolling_avg_30
+from
+    daily_sales
+where 
+    sales_transaction_date>='2018-01-01' 
+and 
+    sales_transaction_date<'2019-01-01'
+order by 1
+limit 20;
+
+## Calculating moving 30 day avg for number of sales deals -- type 2
+
+with daily_sales_deals as (
+select 
+    sales_transaction_date::date, 
+    count(*) as daily_total_deals
+from
+    sales
+group by 1
+),
+moving_avg_calcn as(
+select
+    sales_transaction_date::date,
+    daily_total_deals,
+    to_char(avg(daily_total_deals) over(order by sales_transaction_date ROWS between 30 PRECEDING and CURRENT ROW),'FM999,999') as rolling_avg_30,
+    ROW_NUMBER() over(order by sales_transaction_date) as row_number
+from
+    daily_sales_deals
+order by 1
+)
+select 
+    sales_transaction_date,
+    daily_total_deals,
+    case when row_number>=30 then rolling_avg_30 else null end as rolling_30_avg
+from
+    moving_avg_calcn
+where 
+    sales_transaction_date>='2018-01-01' 
+and 
+    sales_transaction_date<'2019-01-01'
+limit 20;
+
+

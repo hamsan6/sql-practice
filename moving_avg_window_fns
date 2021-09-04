@@ -21,4 +21,3 @@ select
 from 
 moving_avg_calcn_7 
 limit 15;
-
