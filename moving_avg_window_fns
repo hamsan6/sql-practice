@@ -1,0 +1,23 @@
+## Calculate moving average
+
+
+with daily_sales as (
+select 
+	sales_transaction_date::date, 
+	sum(sales_amount) as total_sales 
+from 
+	sales group by 1), 
+
+moving_avg_calcn_7 as (
+select 
+	sales_transaction_date::date, 
+	avg(total_sales) over(order by sales_transaction_date ROWS between 7 PRECEDING and CURRENT ROW) as sales_moving_avg_7, 
+	ROW_NUMBER() over(order by sales_transaction_date) as row_number 
+from 
+daily_sales order by 1) 
+select 
+	sales_transaction_date::date, 
+	case when row_number>=7 then sales_moving_avg_7 else null end 
+from 
+moving_avg_calcn_7 
+limit 15;
