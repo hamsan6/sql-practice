@@ -1,0 +1,29 @@
+## max sales over 30 days vs. daily sales
+
+with daily_sales as (
+select 
+	sales_transaction_date::date,
+	sum(sales_amount) as total_sales
+from 
+	sales
+group by 1
+),
+moving_30days_sales as(
+select
+	sales_transaction_date::date,
+	total_sales,
+	max(total_sales) over(order by sales_transaction_date ROWS between 30 PRECEDING and 1 PRECEDING) as max_sales_30
+from
+	daily_sales
+order by 1
+)
+select 
+	sales_transaction_date,
+	total_sales,
+	max_sales_30,
+	case when total_sales>max_sales_30 then 'WIN' else 'LOSE' end as target_achieved
+from
+	moving_30days_sales
+where 
+	sales_transaction_date>='2019-01-01'
+limit 20;
