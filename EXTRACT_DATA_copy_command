@@ -1,0 +1,12 @@
+## COPY command - retrieve large datasets from db to file or from file to db, postgres COPY command
+
+
+## Print results in terminal
+COPY (SELECT * from ....) TO STDOUT WITH CSV HEADER;
+
+## Print results to file - specify full path
+copy (select * from customers limit 5) to '/Users/.../Downloads/test.csv' WITH CSV HEADER;
+COPY 5
+
+## copy command from psql - postgres client
+psql -h my_host -p 5432 -d my_database -U my_username
