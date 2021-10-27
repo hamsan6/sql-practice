@@ -1,0 +1,12 @@
+NULL in SQL
+
+- NULL represents an unknown value
+- Arithmentic operation involving NULL returns NULL
+	- NULL - NULL is NULL
+- Boolean comparison with NULL returns NEITHER true nor false, but returns Unknown (in SQL's three-valued logic)
+- SQL query only selects value whose 'where' expression evaluates to true, and groups whose 'having' value evaluates to true
+- aggregate count(*) counts all NULL and non-NULL tuples
+	- count(aggregate) counts all tuples whose value is not NULL
+	- other SQL aggregate functions ignore NULL values in their computation
+	
+
